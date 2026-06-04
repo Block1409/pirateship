@@ -5,18 +5,14 @@
   --gold:      #c9952a;
   --gold-lt:   #f0c96b;
   --gold-dk:   #7a5a10;
-  --gold-fade: #a07828;
   --brass:     #b8860b;
-  --rust:      #8b3a0f;
   --ink:       #0d0b07;
   --parchment: #f5edda;
-  --cream:     #e8d5b0;
   --plank:     #2a1a0a;
   --plank-lt:  #3d2610;
   --plank-dk:  #160d04;
   --rope:      #8b6914;
   --shadow:    rgba(0,0,0,0.65);
-
   --font-display: 'MedievalSharp', 'Papyrus', fantasy;
   --font-body:    'Cardo', Georgia, serif;
 }
@@ -25,20 +21,95 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
-  background: var(--ink);
+  background: #060402;
   color: var(--parchment);
   min-height: 100vh;
   overflow-x: hidden;
+  /* extra padding so content doesn't sit behind wave strip */
+  padding-bottom: 140px;
 }
 
-/* ── Ocean background ── */
-.ocean-bg {
+/* ═══════════════════════════════
+   PARALLAX BACKGROUND LAYERS
+═══════════════════════════════ */
+.parallax-bg {
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 120% 60% at 50% 110%, #0a2a4a 0%, transparent 70%),
-    linear-gradient(180deg, #060503 0%, #0a1208 55%, #0a1520 100%);
   z-index: 0;
+  pointer-events: none;
+  /* deep night sky base */
+  background: linear-gradient(180deg,
+    #04080f 0%,
+    #060c06 45%,
+    #080e18 75%,
+    #04060c 100%
+  );
+}
+
+/* Layer 1 — stars (barely visible, move slowest) */
+.para-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 12%  8%, rgba(255,240,180,0.55) 0%, transparent 100%),
+    radial-gradient(1px 1px at 28% 15%, rgba(255,240,180,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45%  5%, rgba(255,240,180,0.6)  0%, transparent 100%),
+    radial-gradient(1px 1px at 62% 12%, rgba(255,240,180,0.4)  0%, transparent 100%),
+    radial-gradient(1px 1px at 78%  3%, rgba(255,240,180,0.5)  0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 18%, rgba(255,240,180,0.3)  0%, transparent 100%),
+    radial-gradient(1px 1px at  5% 22%, rgba(255,240,180,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 28%, rgba(255,240,180,0.3)  0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 25%, rgba(255,240,180,0.5)  0%, transparent 100%),
+    radial-gradient(1px 1px at 72% 32%, rgba(255,240,180,0.35) 0%, transparent 100%),
+    radial-gradient(2px 2px at 20% 10%, rgba(255,240,180,0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 67%  7%, rgba(255,240,180,0.2)  0%, transparent 100%),
+    radial-gradient(1px 1px at 83% 26%, rgba(255,240,180,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 35%, rgba(255,240,180,0.3)  0%, transparent 100%);
+  opacity: 0.8;
+}
+
+/* Layer 2 — deep fog bank, drifts upward slightly on scroll */
+.para-fog {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 35% at 20% 60%, rgba(20,40,30,0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 30% at 75% 55%, rgba(10,25,40,0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 20% at 50% 80%, rgba(8,20,14,0.6) 0%, transparent 80%);
+}
+
+/* Layer 3 — distant clouds / mist, moves fastest */
+.para-clouds {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 40% 15% at 15% 45%, rgba(30,50,35,0.25) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 12% at 60% 38%, rgba(20,40,50,0.2)  0%, transparent 70%),
+    radial-gradient(ellipse 50% 18% at 85% 50%, rgba(25,45,32,0.22) 0%, transparent 70%);
+}
+
+/* ═══════════════════════════════
+   OCEAN BOTTOM — smooth fade
+═══════════════════════════════ */
+.ocean-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  z-index: 2;
+  pointer-events: none;
+  /* multi-stop fade: transparent sky → deep water → black seabed */
+  background: linear-gradient(
+    180deg,
+    transparent                    0%,
+    rgba(4, 18, 32, 0)             15%,
+    rgba(5, 22, 38, 0.55)          38%,
+    rgba(6, 26, 44, 0.82)          58%,
+    rgba(5, 18, 28, 0.95)          76%,
+    rgba(3, 10, 16, 1)             90%,
+    rgba(2, 6,  10, 1)             100%
+  );
   overflow: hidden;
 }
 
@@ -46,25 +117,45 @@ body {
   position: absolute;
   bottom: 0;
   width: 200%;
-  height: 120px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60'%3E%3Cpath d='M0 30 Q150 0 300 30 Q450 60 600 30 Q750 0 900 30 Q1050 60 1200 30 L1200 60 L0 60 Z' fill='%230d1a0e' opacity='0.7'/%3E%3C/svg%3E") repeat-x bottom;
-  background-size: 600px 60px;
   animation: waveScroll linear infinite;
 }
-.wave1 { animation-duration: 14s; opacity: 0.4; }
-.wave2 { animation-duration: 22s; opacity: 0.25; transform: scaleX(-1); bottom: -10px; }
+
+/* wave 1 — tallest, darkest, slowest */
+.wave1 {
+  height: 70px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 70'%3E%3Cpath d='M0 35 Q150 5 300 35 Q450 65 600 35 Q750 5 900 35 Q1050 65 1200 35 L1200 70 L0 70 Z' fill='%23030d18'/%3E%3C/svg%3E") repeat-x bottom;
+  background-size: 600px 70px;
+  animation-duration: 18s;
+  opacity: 1;
+}
+
+/* wave 2 — mid, slightly lighter */
+.wave2 {
+  height: 50px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 50'%3E%3Cpath d='M0 25 Q150 0 300 25 Q450 50 600 25 Q750 0 900 25 Q1050 50 1200 25 L1200 50 L0 50 Z' fill='%230a1e30' opacity='0.85'/%3E%3C/svg%3E") repeat-x bottom;
+  background-size: 700px 50px;
+  animation-duration: 12s;
+  animation-direction: reverse;
+  opacity: 0.7;
+}
+
+/* wave 3 — smallest foam crest on top */
+.wave3 {
+  height: 28px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 28'%3E%3Cpath d='M0 14 Q100 0 200 14 Q300 28 400 14 Q500 0 600 14 Q700 28 800 14 Q900 0 1000 14 Q1100 28 1200 14 L1200 28 L0 28 Z' fill='%23122840' opacity='0.5'/%3E%3C/svg%3E") repeat-x bottom;
+  background-size: 400px 28px;
+  animation-duration: 8s;
+  opacity: 0.5;
+}
 
 @keyframes waveScroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.wave2 { animation-name: waveScroll2; }
-@keyframes waveScroll2 {
-  from { transform: scaleX(-1) translateX(0); }
-  to   { transform: scaleX(-1) translateX(-50%); }
-}
 
-/* ── Layout wrapper ── */
+/* ═══════════════════════════════
+   LAYOUT
+═══════════════════════════════ */
 #wrapper {
   position: relative;
   z-index: 1;
@@ -88,8 +179,7 @@ header::after {
   width: 80%;
   height: 8px;
   background:
-    repeating-linear-gradient(
-      90deg,
+    repeating-linear-gradient(90deg,
       var(--rope) 0px, var(--rope) 6px,
       transparent 6px, transparent 8px
     ),
@@ -113,22 +203,13 @@ h1 {
   font-family: var(--font-display);
   font-size: clamp(2rem, 6vw, 3.6rem);
   letter-spacing: 0.06em;
-  /* faded worn-gold bar-sign effect */
-  background: linear-gradient(
-    180deg,
-    #f5e070 0%,
-    #c9952a 28%,
-    #e8c060 45%,
-    #7a5010 58%,
-    #c08020 72%,
-    #6a4008 85%,
-    #a07020 100%
+  background: linear-gradient(180deg,
+    #f5e070 0%, #c9952a 28%, #e8c060 45%,
+    #7a5010 58%, #c08020 72%, #6a4008 85%, #a07020 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* rough worn edge */
-  text-shadow: none;
   filter: drop-shadow(0 3px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 30px rgba(160,112,32,0.25));
   margin: 10px 0 6px;
 }
@@ -136,10 +217,7 @@ h1 {
 .tagline {
   font-family: var(--font-body);
   font-style: italic;
-  font-weight: 400;
   font-size: 1.05rem;
-  /* faded, like lettering worn off a pub sign */
-  color: transparent;
   background: linear-gradient(90deg, #7a5a20 0%, #c09040 30%, #a07030 60%, #6a4a18 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -149,21 +227,13 @@ h1 {
   opacity: 0.85;
 }
 
-/* ── Section labels ── */
+/* ── Sections ── */
 .category {
   margin-bottom: 52px;
   animation: fadeUp 0.7s ease both;
   background:
-    repeating-linear-gradient(
-      92deg,
-      transparent 0px, transparent 18px,
-      rgba(0,0,0,0.06) 18px, rgba(0,0,0,0.06) 19px
-    ),
-    repeating-linear-gradient(
-      88deg,
-      transparent 0px, transparent 34px,
-      rgba(255,255,255,0.02) 34px, rgba(255,255,255,0.02) 35px
-    ),
+    repeating-linear-gradient(92deg, transparent 0px, transparent 18px, rgba(0,0,0,0.06) 18px, rgba(0,0,0,0.06) 19px),
+    repeating-linear-gradient(88deg, transparent 0px, transparent 34px, rgba(255,255,255,0.02) 34px, rgba(255,255,255,0.02) 35px),
     linear-gradient(175deg, #3a2208 0%, #1e1005 40%, #2a1608 80%, #160c04 100%);
   border: 2px solid;
   border-color: #6b4a12 #3d2208 #2a1608 #6b4a12;
@@ -197,14 +267,8 @@ h1 {
   letter-spacing: 0.1em;
   text-align: center;
   margin-bottom: 24px;
-  /* faded bar-sign gold */
-  background: linear-gradient(
-    180deg,
-    #e0b840 0%,
-    #a07020 35%,
-    #c09030 55%,
-    #6a4810 75%,
-    #a07828 100%
+  background: linear-gradient(180deg,
+    #e0b840 0%, #a07020 35%, #c09030 55%, #6a4810 75%, #a07828 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -226,7 +290,7 @@ h1 {
   opacity: 0.6;
 }
 
-/* ── Card grid ── */
+/* ── Grid ── */
 .grid {
   display: flex;
   flex-wrap: wrap;
@@ -234,7 +298,6 @@ h1 {
   gap: 22px;
 }
 
-/* ── Card wrapper ── */
 .card-wrap {
   display: flex;
   flex-direction: column;
@@ -260,19 +323,9 @@ h1 {
   text-decoration: none;
   color: var(--parchment);
   background:
-    repeating-linear-gradient(
-      94deg,
-      transparent 0px, transparent 22px,
-      rgba(0,0,0,0.07) 22px, rgba(0,0,0,0.07) 23px
-    ),
-    repeating-linear-gradient(
-      87deg,
-      transparent 0px, transparent 40px,
-      rgba(255,255,255,0.025) 40px, rgba(255,255,255,0.025) 41px
-    ),
-    linear-gradient(170deg,
-      #4a2c10 0%, #331a08 30%, #2a1608 60%, #3d2210 85%, #1e0e04 100%
-    );
+    repeating-linear-gradient(94deg, transparent 0px, transparent 22px, rgba(0,0,0,0.07) 22px, rgba(0,0,0,0.07) 23px),
+    repeating-linear-gradient(87deg, transparent 0px, transparent 40px, rgba(255,255,255,0.025) 40px, rgba(255,255,255,0.025) 41px),
+    linear-gradient(170deg, #4a2c10 0%, #331a08 30%, #2a1608 60%, #3d2210 85%, #1e0e04 100%);
   border: 2px solid;
   border-color: #7a520f #3a2008 #2a1608 #7a520f;
   border-bottom: none;
@@ -286,12 +339,10 @@ h1 {
   overflow: hidden;
   flex: 1;
 }
-
 .box::after {
   content: '';
   position: absolute;
-  left: 0; right: 0;
-  top: 50%;
+  left: 0; right: 0; top: 50%;
   height: 1px;
   background: linear-gradient(90deg, transparent 5%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.3) 80%, transparent 95%);
   pointer-events: none;
@@ -303,12 +354,10 @@ h1 {
   background: linear-gradient(135deg, rgba(201,149,42,0.06) 0%, transparent 55%);
   pointer-events: none;
 }
-
 .card-wrap--add .box {
   border-radius: 5px;
   border-bottom: 2px dashed rgba(122,90,16,0.4);
 }
-
 .box:hover {
   transform: translateY(-5px);
   border-color: #c9952a #7a520f #5a3a0f #c9952a;
@@ -316,13 +365,10 @@ h1 {
 .card-wrap:has(.box:hover) .new-tab-btn {
   transform: translateY(-5px);
 }
-
-.box .nail-l,
-.box .nail-r {
+.box .nail-l, .box .nail-r {
   position: absolute;
   top: 8px;
-  width: 8px;
-  height: 8px;
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #d4aa50, #7a5a10 70%);
   box-shadow: 0 1px 3px rgba(0,0,0,0.7);
@@ -340,20 +386,14 @@ h1 {
 }
 .box:hover .box-icon { transform: scale(1.15) rotate(-4deg); }
 
-/* card title — faded bar-sign gold */
 .box h2 {
   font-family: var(--font-display);
   font-size: 1rem;
   letter-spacing: 0.04em;
   text-align: center;
-  background: linear-gradient(
-    180deg,
-    #e8c050 0%,
-    #a07828 30%,
-    #d4a840 50%,
-    #6a4810 68%,
-    #b08830 85%,
-    #7a5820 100%
+  background: linear-gradient(180deg,
+    #e8c050 0%, #a07828 30%, #d4a840 50%,
+    #6a4810 68%, #b08830 85%, #7a5820 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -382,11 +422,7 @@ h1 {
   gap: 5px;
   padding: 9px 12px;
   background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px, transparent 10px,
-      rgba(0,0,0,0.08) 10px, rgba(0,0,0,0.08) 11px
-    ),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 10px, rgba(0,0,0,0.08) 10px, rgba(0,0,0,0.08) 11px),
     linear-gradient(180deg, #2a1a08 0%, #1a0e04 100%);
   border: 2px solid;
   border-color: #5a3a0f #3a2008 #2a1608 #5a3a0f;
@@ -399,29 +435,19 @@ h1 {
   text-decoration: none;
   transition: background 0.2s ease, color 0.2s ease, transform 0.25s ease;
   cursor: pointer;
-  /* faded gold text */
-  background-clip: unset;
   color: #a07828;
 }
-.new-tab-btn span {
-  font-style: normal;
-  font-size: 0.95rem;
-  transition: transform 0.2s ease;
-}
+.new-tab-btn span { font-style: normal; font-size: 0.95rem; transition: transform 0.2s ease; }
 .new-tab-btn:hover {
   color: #d4a840;
   background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px, transparent 10px,
-      rgba(0,0,0,0.08) 10px, rgba(0,0,0,0.08) 11px
-    ),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 10px, rgba(0,0,0,0.08) 10px, rgba(0,0,0,0.08) 11px),
     linear-gradient(180deg, #3d2810 0%, #2a1a08 100%);
   border-color: #c9952a #7a520f #5a3a0f #c9952a;
 }
 .new-tab-btn:hover span { transform: translate(2px, -2px); }
 
-/* ── Add-site placeholder cards ── */
+/* ── Add-site placeholders ── */
 .box--add {
   border-style: dashed;
   border-color: rgba(122,90,16,0.35);
@@ -455,8 +481,7 @@ footer {
   padding-top: 24px;
   border-top: 3px solid transparent;
   border-image:
-    repeating-linear-gradient(
-      90deg,
+    repeating-linear-gradient(90deg,
       var(--rope) 0px, var(--rope) 5px,
       transparent 5px, transparent 8px
     ) 1;

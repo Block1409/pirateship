@@ -4,16 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pirateship</title>
-
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link href="style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<div class="ocean-bg">
+
+<!-- Parallax ocean layers -->
+<div class="parallax-bg">
+  <div class="para-stars"  data-speed="0.15"></div>
+  <div class="para-fog"    data-speed="0.3"></div>
+  <div class="para-clouds" data-speed="0.45"></div>
+</div>
+
+<!-- Fixed wave strip at bottom -->
+<div class="ocean-bottom">
   <div class="wave wave1"></div>
   <div class="wave wave2"></div>
+  <div class="wave wave3"></div>
 </div>
 
 <div id="wrapper">
@@ -53,7 +61,6 @@
           </a>
         </div>
 
-        <!-- ADD MORE: copy a .card-wrap block, update both hrefs, icon, h2, p -->
         <div class="card-wrap card-wrap--add">
           <a href="#" class="box box--add">
             <div class="box-icon">＋</div>
@@ -102,5 +109,17 @@
     <p>⚓ Sail true &nbsp;•&nbsp; pirateship.uk</p>
   </footer>
 </div>
+
+<script>
+  // Parallax on scroll — each layer moves at its own speed
+  const layers = document.querySelectorAll('[data-speed]');
+  window.addEventListener('scroll', () => {
+    const sy = window.scrollY;
+    layers.forEach(el => {
+      const speed = parseFloat(el.dataset.speed);
+      el.style.transform = `translateY(${sy * speed}px)`;
+    });
+  }, { passive: true });
+</script>
 </body>
 </html>
