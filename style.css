@@ -113,11 +113,21 @@ h1 {
   opacity: 0.8;
 }
 
-/* ── Card grid ── */
+/* ── Card grid — centred ── */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
+}
+
+/* ── Card wrapper (tile + button stacked) ── */
+.card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 220px;
+  flex-shrink: 0;
 }
 
 /* ── Cards ── */
@@ -128,19 +138,24 @@ h1 {
   justify-content: center;
   gap: 8px;
   padding: 32px 20px 28px;
-  border-radius: 14px;
+  border-radius: 14px 14px 0 0;
   text-decoration: none;
   color: var(--parchment);
-  background:
-    linear-gradient(160deg, var(--plank-lt) 0%, var(--plank) 100%);
+  background: linear-gradient(160deg, var(--plank-lt) 0%, var(--plank) 100%);
   border: 1.5px solid var(--gold-dk);
-  box-shadow:
-    0 4px 24px rgba(0,0,0,0.6),
-    inset 0 1px 0 rgba(255,220,100,0.08);
+  border-bottom: none;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,220,100,0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   min-height: 180px;
   position: relative;
   overflow: hidden;
+  flex: 1;
+}
+
+/* round bottom corners when there's no button (add placeholders) */
+.card-wrap--add .box {
+  border-radius: 14px;
+  border-bottom: 1.5px dashed rgba(122,90,16,0.5);
 }
 
 .box::before {
@@ -152,12 +167,13 @@ h1 {
 }
 
 .box:hover {
-  transform: translateY(-5px) scale(1.02);
+  transform: translateY(-4px);
   border-color: var(--gold);
-  box-shadow:
-    0 12px 40px rgba(0,0,0,0.7),
-    0 0 20px rgba(201,149,42,0.18),
-    inset 0 1px 0 rgba(255,220,100,0.15);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 0 20px rgba(201,149,42,0.18), inset 0 1px 0 rgba(255,220,100,0.15);
+}
+/* keep button flush when card lifts */
+.card-wrap:has(.box:hover) .new-tab-btn {
+  transform: translateY(-4px);
 }
 
 .box-icon {
@@ -184,6 +200,38 @@ h1 {
   line-height: 1.4;
 }
 
+/* ── New-tab button ── */
+.new-tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: rgba(122,90,16,0.25);
+  border: 1.5px solid var(--gold-dk);
+  border-top: 1px solid rgba(201,149,42,0.2);
+  border-radius: 0 0 14px 14px;
+  color: var(--gold);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 0.8rem;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.25s ease;
+  cursor: pointer;
+}
+.new-tab-btn span {
+  font-style: normal;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease;
+}
+.new-tab-btn:hover {
+  background: rgba(201,149,42,0.2);
+  color: var(--gold-lt);
+  border-color: var(--gold);
+}
+.new-tab-btn:hover span { transform: translate(2px, -2px); }
+
 /* ── Add-site placeholder cards ── */
 .box--add {
   border-style: dashed;
@@ -194,7 +242,7 @@ h1 {
 }
 .box--add:hover {
   opacity: 0.9;
-  transform: translateY(-3px) scale(1.01);
+  transform: translateY(-3px);
   border-color: var(--gold-dk);
   box-shadow: none;
 }
