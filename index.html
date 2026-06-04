@@ -24,6 +24,21 @@
   <div class="wave wave3"></div>
 </div>
 
+<!-- Info modal -->
+<div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div class="modal-icon" id="modal-icon"></div>
+    <h2 class="modal-title" id="modal-title"></h2>
+    <p class="modal-desc" id="modal-desc"></p>
+    <div class="modal-info" id="modal-info"></div>
+    <div class="modal-actions">
+      <a class="modal-btn-main" id="modal-link-main" href="#" target="_self">Open</a>
+      <a class="modal-btn-tab"  id="modal-link-tab"  href="#" target="_blank" rel="noopener">↗ New tab</a>
+    </div>
+  </div>
+</div>
+
 <div id="wrapper">
   <header>
     <div class="skull">☠</div>
@@ -37,36 +52,54 @@
       <h3 class="category-label">— Websites —</h3>
       <div class="grid">
 
-        <div class="card-wrap">
-          <a href="https://plex.pirateship.uk" class="box">
+        <!--
+          CARD TEMPLATE — copy this block to add a site.
+          data-info: pipe-separated bullet points shown in the modal.
+          data-desc: one-line description in the modal.
+        -->
+        <div class="card-wrap"
+             data-href="https://plex.pirateship.uk"
+             data-title="Plex"
+             data-icon="🎬"
+             data-desc="Stream your personal media library from anywhere."
+             data-info="Movies & TV shows|Request new content via Overseerr|4K and HDR supported|Login with your Plex account">
+          <button class="box" aria-label="Plex — info">
             <span class="nail-l"></span><span class="nail-r"></span>
             <div class="box-icon">🎬</div>
             <h2>Plex</h2>
             <p>Movies &amp; TV shows</p>
-          </a>
-          <a href="https://plex.pirateship.uk" target="_blank" rel="noopener" class="new-tab-btn">
-            <span>↗</span> New tab
-          </a>
+          </button>
+          <div class="card-footer">
+            <a class="card-open" href="https://plex.pirateship.uk">Open</a>
+            <a class="card-tab"  href="https://plex.pirateship.uk" target="_blank" rel="noopener">↗</a>
+          </div>
         </div>
 
-        <div class="card-wrap">
-          <a href="https://audio.pirateship.uk" class="box">
+        <div class="card-wrap"
+             data-href="https://audio.pirateship.uk"
+             data-title="Audiobookshelf"
+             data-icon="🎧"
+             data-desc="Your personal audiobook and podcast server."
+             data-info="Audiobooks & podcasts|Track your listening progress|Offline downloads supported|Login with your account">
+          <button class="box" aria-label="Audiobookshelf — info">
             <span class="nail-l"></span><span class="nail-r"></span>
             <div class="box-icon">🎧</div>
             <h2>Audiobookshelf</h2>
             <p>Audiobooks &amp; podcasts</p>
-          </a>
-          <a href="https://audio.pirateship.uk" target="_blank" rel="noopener" class="new-tab-btn">
-            <span>↗</span> New tab
-          </a>
+          </button>
+          <div class="card-footer">
+            <a class="card-open" href="https://audio.pirateship.uk">Open</a>
+            <a class="card-tab"  href="https://audio.pirateship.uk" target="_blank" rel="noopener">↗</a>
+          </div>
         </div>
 
+        <!-- ADD MORE: copy a card-wrap block above; update data-* attrs, href, icon, h2, p -->
         <div class="card-wrap card-wrap--add">
-          <a href="#" class="box box--add">
+          <button class="box box--add" disabled>
             <div class="box-icon">＋</div>
             <h2>Add Site</h2>
             <p>Edit index.html</p>
-          </a>
+          </button>
         </div>
 
       </div>
@@ -78,27 +111,27 @@
       <div class="grid">
 
         <div class="card-wrap card-wrap--add">
-          <a href="#" class="box box--add">
+          <button class="box box--add" disabled>
             <div class="box-icon">＋</div>
             <h2>Add Site</h2>
             <p>Edit index.html</p>
-          </a>
+          </button>
         </div>
 
         <div class="card-wrap card-wrap--add">
-          <a href="#" class="box box--add">
+          <button class="box box--add" disabled>
             <div class="box-icon">＋</div>
             <h2>Add Site</h2>
             <p>Edit index.html</p>
-          </a>
+          </button>
         </div>
 
         <div class="card-wrap card-wrap--add">
-          <a href="#" class="box box--add">
+          <button class="box box--add" disabled>
             <div class="box-icon">＋</div>
             <h2>Add Site</h2>
             <p>Edit index.html</p>
-          </a>
+          </button>
         </div>
 
       </div>
@@ -106,20 +139,67 @@
   </main>
 
   <footer>
-    <p>⚓ Sail true &nbsp;•&nbsp; pirateship.uk</p>
+    <p>⚓ pirateship.uk</p>
   </footer>
 </div>
 
 <script>
-  // Parallax on scroll — each layer moves at its own speed
+  /* ── Parallax ── */
   const layers = document.querySelectorAll('[data-speed]');
   window.addEventListener('scroll', () => {
     const sy = window.scrollY;
     layers.forEach(el => {
-      const speed = parseFloat(el.dataset.speed);
-      el.style.transform = `translateY(${sy * speed}px)`;
+      el.style.transform = `translateY(${sy * parseFloat(el.dataset.speed)}px)`;
     });
   }, { passive: true });
+
+  /* ── Info modal ── */
+  const overlay   = document.getElementById('modal-overlay');
+  const modalClose= document.getElementById('modal-close');
+  const mIcon     = document.getElementById('modal-icon');
+  const mTitle    = document.getElementById('modal-title');
+  const mDesc     = document.getElementById('modal-desc');
+  const mInfo     = document.getElementById('modal-info');
+  const mLinkMain = document.getElementById('modal-link-main');
+  const mLinkTab  = document.getElementById('modal-link-tab');
+
+  function openModal(card) {
+    const href  = card.dataset.href;
+    const title = card.dataset.title;
+    const icon  = card.dataset.icon;
+    const desc  = card.dataset.desc  || '';
+    const info  = card.dataset.info  || '';
+
+    mIcon.textContent  = icon;
+    mTitle.textContent = title;
+    mDesc.textContent  = desc;
+    mLinkMain.href     = href;
+    mLinkTab.href      = href;
+
+    mInfo.innerHTML = info
+      ? info.split('|').map(s => `<span class="modal-bullet">⚓ ${s.trim()}</span>`).join('')
+      : '';
+
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    modalClose.focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  // clicking the card tile opens the modal
+  document.querySelectorAll('.card-wrap:not(.card-wrap--add) .box').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.closest('.card-wrap')));
+  });
+
+  modalClose.addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 </body>
 </html>
