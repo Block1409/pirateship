@@ -20,7 +20,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Crimson Pro', Georgia, serif;
+  font-family: Papyrus, 'Papyrus FC', fantasy;
   background: var(--ink);
   color: var(--parchment);
   min-height: 100vh;
@@ -107,9 +107,9 @@ header::after {
 }
 
 h1 {
-  font-family: 'Cinzel Decorative', serif;
+  font-family: Papyrus, 'Papyrus FC', fantasy;
   font-size: clamp(2rem, 6vw, 3.8rem);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   color: var(--gold-lt);
   text-shadow:
     0 2px 0 rgba(0,0,0,0.8),
@@ -172,9 +172,9 @@ h1 {
 .category::after  { right: 10px; }
 
 .category-label {
-  font-family: 'Cinzel Decorative', serif;
+  font-family: Papyrus, 'Papyrus FC', fantasy;
   font-size: 0.75rem;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.12em;
   color: var(--gold);
   text-align: center;
   margin-bottom: 24px;
@@ -323,9 +323,9 @@ h1 {
 .box:hover .box-icon { transform: scale(1.15) rotate(-4deg); }
 
 .box h2 {
-  font-family: 'Cinzel Decorative', serif;
+  font-family: Papyrus, 'Papyrus FC', fantasy;
   font-size: 1rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
   color: var(--gold-lt);
   text-align: center;
   text-shadow: 0 1px 4px rgba(0,0,0,0.8);
@@ -362,7 +362,7 @@ h1 {
   border-top: 1px solid rgba(90,58,15,0.5);
   border-radius: 0 0 5px 5px;
   color: var(--gold);
-  font-family: 'Crimson Pro', Georgia, serif;
+  font-family: Papyrus, 'Papyrus FC', fantasy;
   font-size: 0.82rem;
   font-style: italic;
   letter-spacing: 0.06em;
@@ -410,7 +410,7 @@ h1 {
 footer {
   text-align: center;
   font-size: 0.8rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   color: rgba(245,237,218,0.18);
   padding-top: 24px;
   /* rope border */
